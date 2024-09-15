@@ -1,16 +1,40 @@
-## Simple bank (Work in progress)
+## Simple bank (WIP)
 
-
-### Working with database
 
 ### Tech stack
 
+#### Design tool
+- [dbdiagram](https://dbdiagram.io/home): It is used to design data table schema and support to export sql.
+
+#### Dev library
 - golang
 - postgres DB
 - [golang/migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate#linux-deb-package): data schema migration library
 - [sqlc](https://docs.sqlc.dev/en/stable/tutorials/getting-started-postgresql.html#):An sql generation library
 
+#### Test library
+- [Testify](https://github.com/stretchr/testify): used to assert test result?
+  
+
 ### Folder structure
+├── db
+│   ├── migration
+│   │   ├── **_schema.down.sql
+│   │   ├── **_schema.up.sql
+│   ├── query
+│   │   ├── **.sql
+│   ├── sqlc
+│   │   ├── **.go
+├── util
+│   ├── random.go
+├── main.go
+├── exported.sql 
+├── go.mod
+├── go.sum
+├── Makefile
+├── sqlc.yaml
+├── README.md
+└── .gitignore
 
 
 #### commands
