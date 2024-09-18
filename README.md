@@ -17,6 +17,9 @@
   
 
 ### Folder structure
+```text
+
+simple-bank/
 ├── db
 │   ├── migration
 │   │   ├── **_schema.down.sql
@@ -36,6 +39,7 @@
 ├── README.md
 └── .gitignore
 
+```text
 
 #### commands
 
