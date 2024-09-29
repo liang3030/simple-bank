@@ -1,12 +1,32 @@
 package main
 
-import "fmt"
+import (
+	"database/sql"
+	"log"
+
+	"github.com/liang3030/simple-bank/api"
+	db "github.com/liang3030/simple-bank/db/sqlc"
+	"github.com/liang3030/simple-bank/util"
+	_ "github.com/lib/pq"
+)
 
 func main() {
-	// Call the function from the imported package
-	SayHello()
-}
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatalf("cannot load config: %v", err)
+	}
 
-func SayHello() {
-	fmt.Println("unimplemented")
+	// connnect to database
+	conn, err := sql.Open(config.DBDriver, config.DBSource)
+	if err != nil {
+		log.Fatalf("cannot connect to db: %v", err)
+	}
+
+	// create a new store
+	store := db.NewStore(conn)
+	server := api.NewServer(store)
+	err = server.Start(config.ServerAddress)
+	if err != nil {
+		log.Fatalf("cannot start server: %v", err)
+	}
 }

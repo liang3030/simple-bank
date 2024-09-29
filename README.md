@@ -6,14 +6,37 @@
 #### Design tool
 - [dbdiagram](https://dbdiagram.io/home): It is used to design data table schema and support to export sql.
 
-#### Dev library
+#### Dev Stack
 - golang
 - postgres DB
 - [golang/migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate#linux-deb-package): data schema migration library
 - [sqlc](https://docs.sqlc.dev/en/stable/tutorials/getting-started-postgresql.html#):An sql generation library
+- [viper](https://github.com/spf13/viper): environment configuration
+- [goMock](https://github.com/golang/mock): mock database, used for test
 
 #### Test library
 - [Testify](https://github.com/stretchr/testify): used to assert test result?
+
+#### Mock install
+After install, it needs to setting path. 
+```shell
+vi ~/.zshrc
+
+# In the file, write below line, then save and exit
+# export PATH=$PATH:~/go/bin
+
+source ~/.zshrc
+
+```
+
+```shell
+go install github.com/golang/mock/mockgen@v1.6.0
+```
+Generate mocked file/interface, first parameter is directory, second parameter is interface.
+
+```shell
+mockgen -destination db/mock/store.go github.com/liang3030/simple-bank/db/sqlc IStore
+```
   
 
 ### Folder structure
@@ -81,4 +104,42 @@ createdb --username=root --owner=root simple_bank
 
 ```shell
 migrate -path db/migration -database "postgresql://root:admin@localhost:5432/simple_bank?sslmode=disable" -verbose up
+```
+
+### Others
+
+Error message: - Find out reason
+
+```shell
+interface conversion: interface {} is nil, not string
+/usr/local/go/src/runtime/iface.go:275 (0x31e7ba4)
+	panicdottypeE: panic(&TypeAssertionError{iface, have, want, ""})
+/Users/liangzhang/Documents/programming_lang/simple-bank/db/sqlc/store.go:68 (0x35ee48f)
+	(*SQLStore).TransferTx.func1: txName := ctx.Value(txKey).(string)
+/Users/liangzhang/Documents/programming_lang/simple-bank/db/sqlc/store.go:35 (0x35ed766)
+	(*SQLStore).execTx: err = fn(q)
+/Users/liangzhang/Documents/programming_lang/simple-bank/db/sqlc/store.go:66 (0x35ed92a)
+	(*SQLStore).TransferTx: err := store.execTx(ctx, func(q *Queries) error {
+/Users/liangzhang/Documents/programming_lang/simple-bank/api/transfer.go:37 (0x35f0b79)
+	(*Server).transfer: result, err := server.store.TransferTx(ctx, arg)
+/Users/liangzhang/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185 (0x35e68ae)
+	(*Context).Next: c.handlers[c.index](c)
+/Users/liangzhang/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/recovery.go:102 (0x35e689b)
+	CustomRecoveryWithWriter.func1: c.Next()
+/Users/liangzhang/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185 (0x35e59e4)
+	(*Context).Next: c.handlers[c.index](c)
+/Users/liangzhang/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/logger.go:249 (0x35e59cb)
+	LoggerWithConfig.func1: c.Next()
+/Users/liangzhang/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/context.go:185 (0x35e4dd1)
+	(*Context).Next: c.handlers[c.index](c)
+/Users/liangzhang/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:633 (0x35e4840)
+	(*Engine).handleHTTPRequest: c.Next()
+/Users/liangzhang/go/pkg/mod/github.com/gin-gonic/gin@v1.10.0/gin.go:589 (0x35e44d1)
+	(*Engine).ServeHTTP: engine.handleHTTPRequest(c)
+/usr/local/go/src/net/http/server.go:3210 (0x344fced)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/go/src/net/http/server.go:2092 (0x34462ef)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/go/src/runtime/asm_amd64.s:1700 (0x324fa40)
+	goexit: BYTE	$0x90	// NOP
 ```

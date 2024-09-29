@@ -7,5 +7,7 @@ sql:
         go:
           package: "db"
           out: "./db/sqlc"
+          emit_empty_slices: true
+          emit_interface: true
 
 

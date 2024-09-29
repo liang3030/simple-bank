@@ -13,11 +13,22 @@ migrateup:
 migratedown:
 	migrate -path db/migration -database "postgresql://root:admin@localhost:5432/simple_bank?sslmode=disable" -verbose down
 
+migratedown1:
+	migrate -path db/migration -database "postgresql://root:admin@localhost:5432/simple_bank?sslmode=disable" -verbose down 1
+
+migrateup1:
+	migrate -path db/migration -database "postgresql://root:admin@localhost:5432/simple_bank?sslmode=disable" -verbose up 1
+
 sqlc:
 	sqlc generate
 
 test:
 	go test -v -cover ./...
 
+server:
+	go run main.go
 
-.PHONY: postgres createdb dropdb test migrateup migratedown sqlc
+mock:
+	mockgen -package mockDB -destination db/mock/store.go github.com/liang3030/simple-bank/db/sqlc IStore
+
+.PHONY: postgres createdb dropdb test migrateup migratedown sqlc test server mock
