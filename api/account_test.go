@@ -18,7 +18,7 @@ import (
 )
 
 func TestGetAccount(t *testing.T) {
-	account := createRandomAccount(t)
+	account := createRandomAccount()
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	store := mockdb.NewMockIStore(ctrl)
@@ -44,7 +44,7 @@ func TestGetAccount(t *testing.T) {
 }
 
 func TestGetAccountAPI(t *testing.T) {
-	account := createRandomAccount(t)
+	account := createRandomAccount()
 
 	testCases := []struct {
 		name          string
@@ -128,8 +128,7 @@ func TestGetAccountAPI(t *testing.T) {
 	}
 }
 
-func createRandomAccount(t *testing.T) db.Account {
-	// user, _ := createRandomUser(t)
+func createRandomAccount() db.Account {
 	return db.Account{
 		ID:       util.RandomInt(1, 1000),
 		Balance:  util.RandomMoney(),
