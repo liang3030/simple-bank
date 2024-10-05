@@ -5,32 +5,50 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 	db "github.com/liang3030/simple-bank/db/sqlc"
+	"github.com/liang3030/simple-bank/token"
+	"github.com/liang3030/simple-bank/util"
 )
 
 // Server HTTP requests for banking service.
 type Server struct {
-	store  db.IStore
-	router *gin.Engine
+	config     util.Config
+	store      db.IStore
+	router     *gin.Engine
+	tokenMaker token.Maker
 }
 
-func NewServer(store db.IStore) *Server {
-	server := &Server{store: store}
-	router := gin.Default()
+func NewServer(config util.Config, store db.IStore) (*Server, error) {
+	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
+	if err != nil {
+		return nil, err
+	}
+	server := &Server{store: store, config: config, tokenMaker: tokenMaker}
 
 	// Register custom validation functions
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("currency", validCurrency)
 	}
+
+	server.setupRouter()
+	return server, nil
+}
+
+func (server *Server) setupRouter() {
+	router := gin.Default()
 	router.POST("/users", server.createUser)
-	router.GET("/users/:username", server.getUser)
-	router.POST("/accounts", server.createAccount)
-	router.GET("/accounts/:id", server.getAccount)
-	router.GET("/accounts", server.listAccounts)
-	router.PATCH("/accounts/:id", server.updateAccount)
-	router.POST("/transfer", server.transfer)
+	router.POST("/users/login", server.loginUser)
+
+	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+
+	authRoutes.GET("/users/:username", server.getUser)
+	authRoutes.POST("/accounts", server.createAccount)
+	authRoutes.GET("/accounts/:id", server.getAccount)
+	authRoutes.GET("/accounts", server.listAccounts)
+	authRoutes.PATCH("/accounts/:id", server.updateAccount)
+
+	authRoutes.POST("/transfer", server.transfer)
 
 	server.router = router
-	return server
 }
 
 func (server *Server) Start(address string) error {
