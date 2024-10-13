@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=simple_bank
+    ports:
+      - '5432:5432'
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+    environment:
+      - DB_SOURCE=postgresql://root:admin@postgres:5432/simple_bank?sslmode=disable
+    entrypoint: ['/app/wait-for.sh', 'postgres:5432', '--', '/app/start.sh']
+    command: ['/app/main']

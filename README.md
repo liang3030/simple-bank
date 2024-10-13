@@ -106,6 +106,33 @@ createdb --username=root --owner=root simple_bank
 migrate -path db/migration -database "postgresql://root:admin@localhost:5432/simple_bank?sslmode=disable" -verbose up
 ```
 
+### Deployment
+
+build docker image
+```shell
+docker build -t simple-bank:latest .
+```
+
+start container
+```shell
+docker run --name simpleBank -p 8080:8080 -e GIN_MODE=release -e DB_SOURCE="postgresql://root:admin@XXX.XXX.XXX:5432/simple_bank?sslmode=disable" simple-bank:latest
+```
+
+create a network
+```shell
+docker network create bank-network
+```
+
+connect to a network 
+```shell
+docker network connect bank-network ${container name: postgres}
+```
+
+start container by conneted network 
+```shell
+docker run --name simpleBank --netowrk bank-network -p 8080:8080 -e GIN_MODE=release -e DB_SOURCE="postgresql://root:admin@postgres:5432/simple_bank?sslmode=disable" simple-bank:latest
+```
+
 ### Others
 
 Error message: - Find out reason
