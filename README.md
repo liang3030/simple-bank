@@ -135,6 +135,27 @@ docker run --name simpleBank --netowrk bank-network -p 8080:8080 -e GIN_MODE=rel
 
 ### Others
 
+#### openssl
+generate random string of 64 characters, and only takes 32 characters
+```shell
+ openssl rand -hex 64 | head -c 32
+```
+#### aws command
+get secrect from aws
+```shell
+ aws secretsmanager get-secret-value --secret-id ${secret name: simple_bank} --query ${extract key: SecretString}
+```
+
+get secrect key and value, write it to target file
+
+```shell
+aws secretsmanager get-secret-value --secret-id simple_bank --query SecretString --output text | jq 'to_entries|map("\(.key)=\(.value)")|.[]'>
+app.env
+```
+#### jq
+jq is a lightweight and flexible command-line JSON processor.
+https://jqlang.github.io/jq/ 
+
 Error message: - Find out reason
 
 ```shell

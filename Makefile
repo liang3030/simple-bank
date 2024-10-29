@@ -10,6 +10,9 @@ dropdb:
 migrateup:
 	migrate -path db/migration -database "postgresql://root:admin@localhost:5432/simple_bank?sslmode=disable" -verbose up
 
+aws-migrateup:
+	migrate -path db/migration -database "postgresql://root:${secret}@simple-bank.cnyo21on7ezz.eu-central-1.rds.amazonaws.com:5432/simple_bank" -verbose up
+
 migratedown:
 	migrate -path db/migration -database "postgresql://root:admin@localhost:5432/simple_bank?sslmode=disable" -verbose down
 
@@ -31,4 +34,4 @@ server:
 mock:
 	mockgen -package mockDB -destination db/mock/store.go github.com/liang3030/simple-bank/db/sqlc IStore
 
-.PHONY: postgres createdb dropdb test migrateup migratedown sqlc test server mock
+.PHONY: postgres createdb dropdb test migrateup migratedown sqlc test server mock aws-migrateup
