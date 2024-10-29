@@ -152,6 +152,12 @@ get secrect key and value, write it to target file
 aws secretsmanager get-secret-value --secret-id simple_bank --query SecretString --output text | jq 'to_entries|map("\(.key)=\(.value)")|.[]'>
 app.env
 ```
+
+login to aws ecr
+
+```shell
+aws ecr get-login-password | docker login --username AWS --password-stdin 679755225703.dkr.ecr.eu-central-1.amazonaws.com
+```
 #### jq
 jq is a lightweight and flexible command-line JSON processor.
 https://jqlang.github.io/jq/ 
