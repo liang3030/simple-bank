@@ -149,8 +149,7 @@ get secrect from aws
 get secrect key and value, write it to target file
 
 ```shell
-aws secretsmanager get-secret-value --secret-id simple_bank --query SecretString --output text | jq 'to_entries|map("\(.key)=\(.value)")|.[]'>
-app.env
+aws secretsmanager get-secret-value --secret-id simple_bank --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]'> app.env
 ```
 
 login to aws ecr
