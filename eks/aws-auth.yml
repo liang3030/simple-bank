@@ -11,4 +11,4 @@ data:
   mapRoles: |
     - rolearn: arn:aws:iam::679755225703:role/github-action-role
       username: github-actions
-      groups:
+      groups: system:masters
