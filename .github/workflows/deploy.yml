@@ -47,7 +47,7 @@ jobs:
       - name: Update kubctl configuration
         run: |
           aws eks get-token --cluster-name simple-bank --region eu-central-1
-          aws eks update-kubeconfig --name simple-bank --region eu-central-1
+          aws eks update-kubeconfig --name simple-bank --region eu-central-1 --role-arn arn:aws:iam::679755225703:role/github-action-role
 
       - name: Verify AWS and kubectl configuration
         run: |
