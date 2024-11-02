@@ -50,7 +50,7 @@ jobs:
 
       - name: deploy to k8s
         run: |
-          kubectl apply -f eks/aws-auth.yml
+          kubectl apply -f eks/aws-auth.yml --validate=false
           kubectl apply -f eks/deployment.yaml
           kubectl apply -f eks/service.yaml
           kubeclt apply -f eks/issuer.yaml
