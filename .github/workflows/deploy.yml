@@ -46,8 +46,7 @@ jobs:
 
       - name: Update kubctl configuration
         run: |
-          aws eks get-token --cluster-name simple-bank --region eu-central-1
-          aws eks update-kubeconfig --name simple-bank --region eu-central-1 
+          aws eks update-kubeconfig --name simple-bank --region eu-central-1
 
       - name: Verify AWS and kubectl configuration
         run: |
