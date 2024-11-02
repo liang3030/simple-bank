@@ -8,7 +8,3 @@ data:
     - userarn: arn:aws:iam::679755225703:user/admin
       username: admin
       groups:
-  mapRoles: |
-    - rolearn: arn:aws:iam::679755225703:role/github-action-role
-      username: github-actions
-      groups: system:masters
