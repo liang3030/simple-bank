@@ -157,9 +157,30 @@ login to aws ecr
 ```shell
 aws ecr get-login-password | docker login --username AWS --password-stdin 679755225703.dkr.ecr.eu-central-1.amazonaws.com
 ```
+update cubectl configuration from aws
+```shell
+ aws eks update-kubeconfig --name simple-bank --region eu-central-1
+```
+
+#### kubectl
+apply aws auth file
+```shell
+kubectl apply -f eks/aws-auth.yml
+```
+
+tool
+(k9s)[https://k9scli.io/]
+
 #### jq
-jq is a lightweight and flexible command-line JSON processor.
-https://jqlang.github.io/jq/ 
+[jq](https://jqlang.github.io/jq/ ) is a lightweight and flexible command-line JSON processor.
+
+#### cert manager
+
+#### SSL/TLS
+
+
+### Links
+[Ingress nginx](https://github.com/kubernetes/ingress-nginx)
 
 Error message: - Find out reason
 

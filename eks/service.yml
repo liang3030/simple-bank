@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-bank-service-api
+spec:
+  selector:
+    app: simple-bank-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  # do  not expose the service to the internet: change it from loadBalancer to ClusterIP
+  type: ClusterIP
