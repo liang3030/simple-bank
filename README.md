@@ -14,6 +14,38 @@
 - [viper](https://github.com/spf13/viper): environment configuration
 - [goMock](https://github.com/golang/mock): mock database, used for test
 
+#### DB migration
+Create a new migration
+
+1. Create a new migrtion and add sql in generated migration file
+```shell
+migrate create -ext sql -dir db/migration -seq <migration_name>
+```
+2. Run migration
+
+```shell
+make migrateup
+```
+3. Create query file in `db/query` folder
+
+4. Generate query file in go
+
+```shell
+make sqlc
+```
+
+5. Re-generate mock file for test
+
+```shell
+make mock
+```
+
+6. Run test to make sure all existed test pass
+
+```shell
+make test
+```
+
 #### Test library
 - [Testify](https://github.com/stretchr/testify): used to assert test result?
 
