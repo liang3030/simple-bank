@@ -14,7 +14,7 @@ option go_package = "github.com/liang3030/simple-bank/pb";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
     title: "Simple Bank API"
-    version: "0.2"
+    version: "0.3"
     contact: {
       name: "Liang"
       url: "https://github.com/liang3030"
@@ -28,6 +28,11 @@ service SimpleBank {
 		option (google.api.http) = {
 			post: "/v1/create_user"
 			body: "*"
+		};
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      description: "API Create a new user"
+      summary: "create a new user"
+			tags: "user"
 		};
 	};
 }

@@ -189,10 +189,19 @@ exit
 
 - [library](https://grpc-ecosystem.github.io/grpc-gateway/)
 
-### Open api
+### OPENAPI
 Generate swagger documention by proto compiler and upload to swaggerhub.
 - [swaggerhub](https://app.swaggerhub.com/free-3d1/home)
 - [swagger-ui](https://github.com/swagger-api/swagger-ui)
+- [statik](https://github.com/rakyll/statik) 
+
+#### statik
+statik allows you to embed a directory of static files into your Go binary to be later served from an http.FileSystem.
+
+install statik command tool
+```shell
+go install github.com/rakyll/statik
+```
 
 ### Others
 

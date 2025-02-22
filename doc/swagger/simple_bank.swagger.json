@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Simple Bank API",
-    "version": "0.2",
+    "version": "0.3",
     "contact": {
       "name": "Liang",
       "url": "https://github.com/liang3030",
@@ -23,6 +23,8 @@
   "paths": {
     "/v1/create_user": {
       "post": {
+        "summary": "create a new user",
+        "description": "API Create a new user",
         "operationId": "SimpleBank_CreateUser",
         "responses": {
           "200": {
@@ -49,7 +51,7 @@
           }
         ],
         "tags": [
-          "SimpleBank"
+          "user"
         ]
       }
     }
