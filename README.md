@@ -165,6 +165,30 @@ start container by conneted network
 docker run --name simpleBank --netowrk bank-network -p 8080:8080 -e GIN_MODE=release -e DB_SOURCE="postgresql://root:admin@postgres:5432/simple_bank?sslmode=disable" simple-bank:latest
 ```
 
+
+### GRPC server
+- [evans](https://github.com/ktr0731/evans): a library could be used to test grpc call. It mocks/works as a client.
+  
+start evans
+```shell
+evans --host localhost --port 9090 -r repl
+```
+
+exit evans
+```shell
+exit
+```
+### gRPC gateway
+
+### gRPC Gateway
+- A plugin of protobuf compiler
+- Generate proxy codes from protobuf
+- Translate HTTP JSON calls to gRPC
+   * In process translation: only for unary
+   * Separate proxy server: both unaray and streaming
+
+- [library](https://grpc-ecosystem.github.io/grpc-gateway/)
+
 ### Others
 
 #### openssl

@@ -35,4 +35,15 @@ server:
 mock:
 	mockgen -package mockDB -destination db/mock/store.go github.com/liang3030/simple-bank/db/sqlc IStore
 
-.PHONY: postgres createdb dropdb test migrateup migratedown sqlc test server mock aws-migrateup
+proto:
+	rm -f pb/*.go
+	protoc --proto_path=proto \
+       --go_out=pb/ --go_opt=paths=source_relative \
+       --go-grpc_out=pb/ --go-grpc_opt=paths=source_relative \
+       --grpc-gateway_out=pb/ --grpc-gateway_opt=paths=source_relative \
+       proto/*.proto
+
+evans:
+	evans --host localhost --port 9090 -r repl
+
+.PHONY: postgres createdb dropdb test migrateup migratedown sqlc test server mock aws-migrateup proto evans

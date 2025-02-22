@@ -1,0 +1,19 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "github.com/liang3030/simple-bank/pb";
+
+import "google/api/annotations.proto";
+
+import "rpc_create_user.proto";
+
+service SimpleBank {
+	rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {
+		option (google.api.http) = {
+			post: "/v1/create_user"
+			body: "*"
+		};
+	};
+}
+
+

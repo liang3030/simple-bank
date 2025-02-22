@@ -1,13 +1,23 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"log"
+	"net"
+	"net/http"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 
 	"github.com/liang3030/simple-bank/api"
 	db "github.com/liang3030/simple-bank/db/sqlc"
+	"github.com/liang3030/simple-bank/gapi"
+	"github.com/liang3030/simple-bank/pb"
 	"github.com/liang3030/simple-bank/util"
 	_ "github.com/lib/pq"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func main() {
@@ -24,12 +34,82 @@ func main() {
 
 	// create a new store
 	store := db.NewStore(conn)
+	// go runGinServer(config, store)
+	// run gRPC gateway server in a separate goroutine, then gateway server and grpc server will not block each other.
+	go runGatewayServer(config, store) // run http gateway server is a separate goroutine
+	runGrpcServer(config, store)
+}
+
+func runGinServer(config util.Config, store db.IStore) {
 	server, err := api.NewServer(config, store)
 	if err != nil {
 		log.Fatalf("cannot create server: %v", err)
 	}
-	err = server.Start(config.ServerAddress)
+	err = server.Start(config.HTTPServerAddress)
 	if err != nil {
 		log.Fatalf("cannot start server: %v", err)
+	}
+}
+
+func runGrpcServer(config util.Config, store db.IStore) {
+	server, err := gapi.NewServer(config, store)
+	if err != nil {
+		log.Fatalf("cannot create server: %v", err)
+	}
+	grpcServer := grpc.NewServer()
+	pb.RegisterSimpleBankServer(grpcServer, server)
+	reflection.Register(grpcServer)
+
+	listener, err := net.Listen("tcp", config.GRPCServerAddress)
+	if err != nil {
+		log.Fatalf("cannot create listener: %v", err)
+	}
+
+	log.Printf("start grpc server on %s", listener.Addr().String())
+
+	err = grpcServer.Serve(listener)
+	if err != nil {
+		log.Fatalf("cannot start server: %v", err)
+	}
+}
+
+func runGatewayServer(config util.Config, store db.IStore) {
+	server, err := gapi.NewServer(config, store)
+	if err != nil {
+		log.Fatalf("cannot create server: %v", err)
+	}
+
+	jsonOption := runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			UseProtoNames: true,
+		},
+		UnmarshalOptions: protojson.UnmarshalOptions{
+			DiscardUnknown: true,
+		},
+	})
+
+	grpcMux := runtime.NewServeMux(jsonOption)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	err = pb.RegisterSimpleBankHandlerServer(ctx, grpcMux, server)
+
+	if err != nil {
+		log.Fatalf("cannot register server: %v", err)
+	}
+
+	mux := http.NewServeMux()
+	mux.Handle("/", grpcMux)
+
+	listener, err := net.Listen("tcp", config.HTTPServerAddress)
+	if err != nil {
+		log.Fatalf("cannot create listener: %v", err)
+	}
+
+	log.Printf("start http gateway server on %s", listener.Addr().String())
+
+	err = http.Serve(listener, mux)
+	if err != nil {
+		log.Fatalf("cannot start http gateway server: %v", err)
 	}
 }

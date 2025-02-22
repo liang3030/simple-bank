@@ -1,0 +1,18 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "github.com/liang3030/simple-bank/pb";
+
+import "user.proto"; // Import the User message from user.proto
+
+message CreateUserRequest {
+	string username = 1;
+	string full_name = 2;
+	string email = 3;
+	string password = 4;
+}
+
+
+message CreateUserResponse {
+	User user = 1;
+}
