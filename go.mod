@@ -1,6 +1,6 @@
 module github.com/liang3030/simple-bank
 
-go 1.22
+go 1.22.0
 
 toolchain go1.23.1
 
@@ -15,10 +15,12 @@ require (
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/golang-migrate/migrate/v4 v4.18.2
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.1
 	github.com/o1egl/paseto v1.0.0
 	github.com/rakyll/statik v0.1.7
 	google.golang.org/genproto/googleapis/api v0.0.0-20250204164813-702378808489
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250204164813-702378808489
 	google.golang.org/grpc v1.70.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1
 )
@@ -27,8 +29,9 @@ require (
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
 	github.com/aead/chacha20poly1305 v0.0.0-20170617001512-233f39982aeb // indirect
 	github.com/aead/poly1305 v0.0.0-20180717145839-3fee0db0b635 // indirect
+	github.com/hashicorp/errwrap v1.1.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250204164813-702378808489 // indirect
 )
 
 require (

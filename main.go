@@ -10,6 +10,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rakyll/statik/fs"
 
+	"github.com/golang-migrate/migrate/v4"
 	"github.com/liang3030/simple-bank/api"
 	db "github.com/liang3030/simple-bank/db/sqlc"
 	"github.com/liang3030/simple-bank/gapi"
@@ -20,6 +21,8 @@ import (
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/encoding/protojson"
 
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/liang3030/simple-bank/doc/statik"
 )
 
@@ -34,6 +37,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("cannot connect to db: %v", err)
 	}
+
+	// Run db migration
+	runDBMigrations(config.MigrationURL, config.DBSource)
 
 	// create a new store
 	store := db.NewStore(conn)
@@ -122,4 +128,18 @@ func runGatewayServer(config util.Config, store db.IStore) {
 	if err != nil {
 		log.Fatalf("cannot start http gateway server: %v", err)
 	}
+}
+
+func runDBMigrations(migrationURL string, dbSource string) {
+	migration, err := migrate.New(migrationURL, dbSource)
+	if err != nil {
+		log.Fatalf("cannot create migration: %v", err)
+	}
+
+	err = migration.Up()
+	if err != nil && err != migrate.ErrNoChange {
+		log.Fatalf("failed to run migration: %v", err)
+	}
+
+	log.Println("Migration completed")
 }
