@@ -16,17 +16,9 @@ WHERE username = $1 LIMIT 1;
 -- name: UpdateUser :one
 UPDATE users
 SET
-	hashed_password = CASE
-	 WHEN @set_hashed_password::boolean THEN @hashed_password
-	 ELSE hashed_password
-	 END,
-	full_name = CASE
-	 WHEN @set_full_name::boolean THEN @full_name
-	 ELSE full_name
-	 END,
-	email = CASE
-	 WHEN @set_email::boolean THEN @email
-	 ELSE email
-	 END
-WHERE username = @username
+	hashed_password = COALESCE(sqlc.narg(hashed_password), hashed_password),
+	password_changed_at = COALESCE(sqlc.narg(password_changed_at), password_changed_at),
+	full_name = COALESCE(sqlc.narg(full_name), full_name),
+	email = COALESCE(sqlc.narg(email), email)
+WHERE username =sqlc.arg(username)
 RETURNING *;
