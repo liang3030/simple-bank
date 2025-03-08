@@ -65,7 +65,8 @@ func runGrpcServer(config util.Config, store db.IStore) {
 	if err != nil {
 		log.Fatalf("cannot create server: %v", err)
 	}
-	grpcServer := grpc.NewServer()
+	grpcLogger := grpc.UnaryInterceptor(gapi.GrpcLogger)
+	grpcServer := grpc.NewServer(grpcLogger)
 	pb.RegisterSimpleBankServer(grpcServer, server)
 	reflection.Register(grpcServer)
 
@@ -124,7 +125,11 @@ func runGatewayServer(config util.Config, store db.IStore) {
 
 	log.Printf("start http gateway server on %s", listener.Addr().String())
 
-	err = http.Serve(listener, mux)
+	// logger middleware
+	handler := gapi.HttpLogger(mux)
+
+	err = http.Serve(listener, handler)
+
 	if err != nil {
 		log.Fatalf("cannot start http gateway server: %v", err)
 	}

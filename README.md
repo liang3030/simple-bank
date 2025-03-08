@@ -195,6 +195,8 @@ exit
 
 - [library](https://grpc-ecosystem.github.io/grpc-gateway/)
 
+### Logger
+- [zerolog](https://github.com/rs/zerolog)
 ### OPENAPI
 Generate swagger documention by proto compiler and upload to swaggerhub.
 - [swaggerhub](https://app.swaggerhub.com/free-3d1/home)
