@@ -211,6 +211,9 @@ install statik command tool
 go install github.com/rakyll/statik
 ```
 
+### Async process
+- [Asynq](https://github.com/hibiken/asynq)
+
 ### Others
 
 #### openssl
