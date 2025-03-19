@@ -2,10 +2,10 @@ package worker
 
 import (
 	"context"
-
-	db "github.com/liang3030/simple-bank/db/sqlc"
+	"log"
 
 	"github.com/hibiken/asynq"
+	db "github.com/liang3030/simple-bank/db/sqlc"
 )
 
 const (
@@ -31,6 +31,10 @@ func NewRedisTaskProcessor(redisOpt asynq.RedisClientOpt, store db.IStore) TaskP
 				QueueCritical: 10,
 				QueueDefault:  5,
 			},
+			ErrorHandler: asynq.ErrorHandlerFunc(func(ctx context.Context, task *asynq.Task, err error) {
+				log.Fatalf("cannot load config: %v", err)
+			}),
+			Logger: NewLogger(),
 		},
 	)
 	return &RedisTaskProcessor{server: server, store: store}
