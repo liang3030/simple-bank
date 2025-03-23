@@ -15,6 +15,7 @@ import (
 	"github.com/liang3030/simple-bank/api"
 	db "github.com/liang3030/simple-bank/db/sqlc"
 	"github.com/liang3030/simple-bank/gapi"
+	"github.com/liang3030/simple-bank/mail"
 	"github.com/liang3030/simple-bank/pb"
 	"github.com/liang3030/simple-bank/util"
 	"github.com/liang3030/simple-bank/worker"
@@ -53,7 +54,7 @@ func main() {
 	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
 	// go runGinServer(config, store)
 	// run gRPC gateway server in a separate goroutine, then gateway server and grpc server will not block each other.
-	go runTaskProcessor(redisOpt, store)
+	go runTaskProcessor(config, redisOpt, store)
 	go runGatewayServer(config, store, taskDistributor) // run http gateway server is a separate goroutine
 	runGrpcServer(config, store, taskDistributor)
 }
@@ -69,8 +70,9 @@ func runGinServer(config util.Config, store db.IStore) {
 	}
 }
 
-func runTaskProcessor(redisOpt asynq.RedisClientOpt, store db.IStore) {
-	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store)
+func runTaskProcessor(config util.Config, redisOpt asynq.RedisClientOpt, store db.IStore) {
+	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
+	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store, mailer)
 	log.Println("start task processor")
 	err := taskProcessor.Start()
 	if err != nil {
